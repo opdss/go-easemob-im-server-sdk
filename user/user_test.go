@@ -5,14 +5,14 @@ import (
 	"github.com/opdss/go-easemob-im-server-sdk/request"
 )
 
-var em *easemob.EaseMob
+var em *easemob.Easemob
 
-func newEaseMob() *easemob.EaseMob {
+func newEasemob() *easemob.Easemob {
 	if em != nil {
 		return em
 	}
 	var err error
-	em, err = easemob.NewEaseMob(request.Config{
+	em, err = easemob.NewEasemob(request.Config{
 		Endpoints:    []string{"http://baiaaaadu.com/cff", "https://a71.easemob.com"},
 		OrgName:      "",
 		AppName:      "",

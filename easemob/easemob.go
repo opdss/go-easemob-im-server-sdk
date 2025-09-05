@@ -7,19 +7,19 @@ import (
 	"github.com/opdss/go-easemob-im-server-sdk/user"
 )
 
-type EaseMob struct {
+type Easemob struct {
 	*request.Client
 	chatroom chatroom.Chatroom
 	user     user.User
 	message  message.Message
 }
 
-func NewEaseMob(conf request.Config) (*EaseMob, error) {
+func NewEasemob(conf request.Config) (*Easemob, error) {
 	c, err := request.NewClient(conf)
 	if err != nil {
 		return nil, err
 	}
-	em := &EaseMob{
+	em := &Easemob{
 		Client:   c,
 		chatroom: chatroom.NewChatroom(c),
 		user:     user.NewUser(c),
@@ -28,14 +28,14 @@ func NewEaseMob(conf request.Config) (*EaseMob, error) {
 	return em, nil
 }
 
-func (em *EaseMob) User() user.User {
+func (em *Easemob) User() user.User {
 	return em.user
 }
 
-func (em *EaseMob) Chatroom() chatroom.Chatroom {
+func (em *Easemob) Chatroom() chatroom.Chatroom {
 	return em.chatroom
 }
 
-func (em *EaseMob) Message() message.Message {
+func (em *Easemob) Message() message.Message {
 	return em.message
 }

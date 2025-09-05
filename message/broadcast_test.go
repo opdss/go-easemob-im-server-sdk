@@ -9,9 +9,9 @@ import (
 
 func TestMessage_Broadcast(t *testing.T) {
 
-	data, err := newEaseMob().Message().BroadcastTxt(context.Background(), &message.BroadcastMsgReq[message.BroadcastTxtMsg]{
+	data, err := newEasemob().Message().BroadcastTxt(context.Background(), &message.BroadcastMsgReq[message.BroadcastTxtMsg]{
 		TargetType: "users",
-		//Appkey:     newEaseMob().Client.Config().AppKey,
+		//Appkey:     newEasemob().Client.Config().AppKey,
 		//From: utils.PointerAny("888888"),
 		Msg: message.BroadcastTxtMsg{
 			Type: message.Txt,

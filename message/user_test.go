@@ -9,7 +9,7 @@ import (
 
 func TestMessage_SendTxtToUser(t *testing.T) {
 
-	data, err := newEaseMob().Message().SendTxtToUser(context.Background(), &message.SendToUserMsgReq[message.TxtMsg]{
+	data, err := newEasemob().Message().SendTxtToUser(context.Background(), &message.SendToUserMsgReq[message.TxtMsg]{
 		UserMsgReq: message.UserMsgReq{
 			To:   []string{"888888"},
 			Type: message.Txt,

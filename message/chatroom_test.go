@@ -9,7 +9,7 @@ import (
 
 func TestMessage_SendTxtToChatroom(t *testing.T) {
 
-	data, err := newEaseMob().Message().SendTxtToChatroom(context.Background(), &message.SendToChatroomMsgReq[message.TxtMsg]{
+	data, err := newEasemob().Message().SendTxtToChatroom(context.Background(), &message.SendToChatroomMsgReq[message.TxtMsg]{
 		ChatroomMsgReq: message.ChatroomMsgReq{
 			To:   []string{"888888"},
 			Type: message.Txt,

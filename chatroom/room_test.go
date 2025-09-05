@@ -8,15 +8,15 @@ import (
 	"testing"
 )
 
-func TestEaseMobChatRoom_GetInfo(t *testing.T) {
-	data, err := newEaseMob().Chatroom().GetInfo(context.Background(), "289695344951298")
+func TestEasemobChatRoom_GetInfo(t *testing.T) {
+	data, err := newEasemob().Chatroom().GetInfo(context.Background(), "289695344951298")
 
 	fmt.Printf("%+v\n", data)
 	fmt.Printf("%+v\n", err)
 }
 
-func TestEaseMobChatRoom_Create(t *testing.T) {
-	data, err := newEaseMob().Chatroom().Create(context.Background(), &chatroom.CreateReq{
+func TestEasemobChatRoom_Create(t *testing.T) {
+	data, err := newEasemob().Chatroom().Create(context.Background(), &chatroom.CreateReq{
 		Name:        "chat room 888888",
 		Description: "chatroom Description",
 		MaxUsers:    utils.PointerAny(111),
@@ -29,8 +29,8 @@ func TestEaseMobChatRoom_Create(t *testing.T) {
 	fmt.Printf("%+v\n", err)
 }
 
-func TestEaseMobChatRoom_Update(t *testing.T) {
-	data, err := newEaseMob().Chatroom().Update(context.Background(), "289695344951298", &chatroom.UpdateReq{
+func TestEasemobChatRoom_Update(t *testing.T) {
+	data, err := newEasemob().Chatroom().Update(context.Background(), "289695344951298", &chatroom.UpdateReq{
 		Name:        "chat room 289695344951298",
 		Description: "chatroom Description",
 		MaxUsers:    8888,
