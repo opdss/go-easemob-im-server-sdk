@@ -32,6 +32,7 @@ func (c *chatroom) GetInfo(ctx context.Context, chatroomId string) (*InfoResp, e
 }
 
 type CreateReq struct {
+	RoomId      *string  `json:"roomid"` //聊天室 ID，不能超过 64 个字符。支持字符类型: . _ - a-z 0-9。**注意不要使用 / @ 大写字母。**该参数只有在联系商务配置后才有效。
 	Name        string   `json:"name" validate:"required,max=128"`
 	Description string   `json:"description" validate:"required,max=512"`
 	MaxUsers    *int     `json:"maxusers,omitempty" validate:"omitempty,min=1,max=10000"`
