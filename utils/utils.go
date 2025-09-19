@@ -8,9 +8,7 @@ import (
 )
 
 func PointerAny[T any](v T) *T {
-	r := new(T)
-	*r = v
-	return r
+	return &v
 }
 
 // IsNetError 需要切换域名的网络错误

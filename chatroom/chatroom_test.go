@@ -13,10 +13,10 @@ func newEasemob() *easemob.Easemob {
 	}
 	em, _ = easemob.NewEasemob(request.Config{
 		Endpoints:    []string{"https://a71.easemob.com"},
-		OrgName:      "1104241128170445",
-		AppName:      "sout-test",
-		ClientId:     "YXA6OIEyvWabTTyhZBY8tlRRUg",
-		ClientSecret: "YXA6iyTY12_6S1XehnmOjqF2DZBWCFg",
+		OrgName:      "",
+		AppName:      "",
+		ClientId:     "",
+		ClientSecret: "",
 	})
 	return em
 }
