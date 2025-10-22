@@ -23,6 +23,7 @@ type Config struct {
 	ClientSecret           string   `help:"环信应用clientSecret" default:""`
 	TokenTTL               int64    `help:"环信token有效期，单位秒" default:"86400"`
 	ChangeEndpointInterval int64    `help:"环信切换endpoint的时间间隔，单位秒" default:"10"`
+	Debug                  bool     `help:"是否开启debug模式，开启后会打印请求和响应" default:"false" devDefault:"true"`
 }
 
 type CommonResp struct {
@@ -65,7 +66,7 @@ type TokenResp struct {
 	AccessToken string    `json:"access_token"` //有效的 Token 字符串。
 	Application string    `json:"token_type"`   //当前 App 的 UUID 值。
 	ExpiresIn   int64     `json:"expires_in"`   //Token 有效时间，单位为秒，在有效期内不需要重复获取。
-	ExpiresAt   time.Time `json:"-"`            //Token 有效时间，单位为秒，在有效期内不需要重复获取。
+	ExpiresAt   time.Time `json:"-"`            //Token 有效截止时间，在有效期内不需要重复获取。接口不返回，用于计算
 }
 
 type Client struct {
@@ -73,7 +74,7 @@ type Client struct {
 	token                  *TokenResp
 	singleFlight           *singleflight.Group
 	endpointLock           *sync.RWMutex
-	lastChangeEndpointTime int64
+	lastChangeEndpointTime int64 // 上次切换 endpoint 的时间
 }
 
 func NewClient(conf Config) (*Client, error) {
@@ -87,26 +88,32 @@ func NewClient(conf Config) (*Client, error) {
 	}, nil
 }
 
+// Config 获取当前配置
 func (c *Client) Config() Config {
 	return c.config
 }
 
+// Get 发送 GET 请求
 func (c *Client) Get(ctx context.Context, apiPath string, resp any) error {
 	return c.requestWithToken(ctx, http.MethodGet, apiPath, nil, resp)
 }
 
+// Post 发送 POST 请求
 func (c *Client) Post(ctx context.Context, apiPath string, req any, resp any) error {
 	return c.requestWithToken(ctx, http.MethodPost, apiPath, req, resp)
 }
 
+// Put 发送 PUT 请求
 func (c *Client) Put(ctx context.Context, apiPath string, req any, resp any) error {
 	return c.requestWithToken(ctx, http.MethodPut, apiPath, req, resp)
 }
 
+// Delete 发送 DELETE 请求
 func (c *Client) Delete(ctx context.Context, apiPath string, req any, resp any) error {
 	return c.requestWithToken(ctx, http.MethodDelete, apiPath, req, resp)
 }
 
+// requestWithToken 发送请求并携带 token
 func (c *Client) requestWithToken(ctx context.Context, method string, apiPath string, req any, resp any) error {
 	tk, err := c.GetToken(ctx)
 	if err != nil {
@@ -114,13 +121,14 @@ func (c *Client) requestWithToken(ctx context.Context, method string, apiPath st
 	}
 	buf := new(bytes.Buffer)
 	if req != nil {
-		enc := json.NewEncoder(buf)
-		err = enc.Encode(req)
+		err = json.NewEncoder(buf).Encode(req)
 		if err != nil {
 			return err
 		}
 	}
-	log.Println("request => ", apiPath, buf.String())
+	if c.config.Debug {
+		log.Printf("easemob[client.requestWithToken] request: %s => %s\n", apiPath, buf.String())
+	}
 	httpReq, err := http.NewRequestWithContext(ctx, method, c.getApiUrl(apiPath), buf)
 	if err != nil {
 		return err
@@ -129,10 +137,10 @@ func (c *Client) requestWithToken(ctx context.Context, method string, apiPath st
 	return c.request(httpReq, resp)
 }
 
+// request 发送请求
 func (c *Client) request(req *http.Request, resp any) error {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
-	//req.Header.Set("Authorization", "Bearer "+tk)
 	httpResp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		if utils.IsNetError(err) {
@@ -145,7 +153,9 @@ func (c *Client) request(req *http.Request, resp any) error {
 	defer func() {
 		_ = httpResp.Body.Close()
 	}()
-	log.Println("response => ", string(body))
+	if c.config.Debug {
+		log.Println("easemob[client.request] response: ", string(body))
+	}
 	if err != nil {
 		return &RequestErrorResp{Code: httpResp.StatusCode, Err: err, Body: string(body)}
 	}
@@ -161,12 +171,14 @@ func (c *Client) request(req *http.Request, resp any) error {
 	return json.Unmarshal(body, &resp)
 }
 
+// getApiUrl 获取 api 地址
 func (c *Client) getApiUrl(path string) string {
 	c.endpointLock.RLock()
 	defer c.endpointLock.RUnlock()
 	return fmt.Sprintf("%s/%s/%s%s", c.config.Endpoints[0], c.config.OrgName, c.config.AppName, path)
 }
 
+// GetToken 获取授权 token
 func (c *Client) GetToken(ctx context.Context) (string, error) {
 	_resp, err, _ := c.singleFlight.Do("GetToken", func() (any, error) {
 		if c.token != nil && c.token.AccessToken != "" && c.token.ExpiresAt.After(time.Now()) {
@@ -177,7 +189,7 @@ func (c *Client) GetToken(ctx context.Context) (string, error) {
 			return "", err
 		}
 		c.token = resp
-		c.token.ExpiresAt = time.Now().Add(time.Second*time.Duration(resp.ExpiresIn) - 10) //别卡点
+		c.token.ExpiresAt = time.Now().Add(time.Second*time.Duration(resp.ExpiresIn) - 30) //预留30秒
 		return resp.AccessToken, nil
 	})
 	if err != nil {
@@ -186,6 +198,7 @@ func (c *Client) GetToken(ctx context.Context) (string, error) {
 	return _resp.(string), nil
 }
 
+// getToken 获取 token
 func (c *Client) getToken(ctx context.Context) (*TokenResp, error) {
 	data := map[string]any{
 		"grant_type":    "client_credentials",
@@ -193,19 +206,29 @@ func (c *Client) getToken(ctx context.Context) (*TokenResp, error) {
 		"client_secret": c.config.ClientSecret,
 		"ttl":           c.config.TokenTTL,
 	}
-	if c.config.TokenTTL > 10 {
+	if c.config.TokenTTL > 0 {
 		data["ttl"] = c.config.TokenTTL
 	}
-	_b, err := json.Marshal(data)
+	var buf bytes.Buffer
+	err := json.NewEncoder(&buf).Encode(data)
 	if err != nil {
 		return nil, err
 	}
-	req, err := http.NewRequestWithContext(ctx, "POST", c.getApiUrl("/token"), bytes.NewReader(_b))
+	req, err := http.NewRequestWithContext(ctx, "POST", c.getApiUrl("/token"), &buf)
 	if err != nil {
 		return nil, err
 	}
 	resp := &TokenResp{}
 	err = c.request(req, resp)
+	if c.config.Debug {
+		log.Printf("easemob[client.getToken] get new token request: %s\n", buf.String())
+		if err == nil {
+			_s, _ := json.Marshal(resp)
+			log.Printf("easemob[client.getToken] get new token reponse: %s\n", string(_s))
+		} else {
+			log.Println("easemob[client.getToken] get new token error: ", err.Error())
+		}
+	}
 	return resp, err
 }
 
@@ -214,10 +237,10 @@ func (c *Client) changeEndpoint() {
 	if len(c.config.Endpoints) < 2 {
 		return
 	}
-	nowUnix := time.Now().Unix()
 	// 检查距离上次更换uri的时间间隔
 	c.endpointLock.Lock()
 	defer c.endpointLock.Unlock()
+	nowUnix := time.Now().Unix()
 	if (nowUnix - c.lastChangeEndpointTime) >= c.config.ChangeEndpointInterval {
 		c.config.Endpoints = append(c.config.Endpoints[1:], c.config.Endpoints[0])
 		c.lastChangeEndpointTime = nowUnix

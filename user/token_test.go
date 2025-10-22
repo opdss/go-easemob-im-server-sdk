@@ -29,7 +29,7 @@ func TestEasemobUser_GetToken(t *testing.T) {
 		Username:       "888888341",
 		GrantType:      "inherit",
 		AutoCreateUser: false,
-		Ttl:            utils.PointerAny(86400),
+		Ttl:            utils.ToPointer(86400),
 	})
 	fmt.Printf("%+v\n", data)
 	fmt.Printf("%+v\n", err)
@@ -38,7 +38,7 @@ func TestEasemobUser_GetToken(t *testing.T) {
 		Username:       "888888341",
 		GrantType:      "inherit",
 		AutoCreateUser: false,
-		Ttl:            utils.PointerAny(86400),
+		Ttl:            utils.ToPointer(86400),
 	})
 
 	fmt.Printf("%+v\n", data)

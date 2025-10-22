@@ -19,10 +19,10 @@ func TestEasemobChatRoom_Create(t *testing.T) {
 	data, err := newEasemob().Chatroom().Create(context.Background(), &chatroom.CreateReq{
 		Name:        "chat room 888888",
 		Description: "chatroom Description",
-		MaxUsers:    utils.PointerAny(111),
+		MaxUsers:    utils.ToPointer(111),
 		Owner:       "888888",
 		Members:     []string{"8888881"},
-		Custom:      utils.PointerAny("chatroom Custom"),
+		Custom:      utils.ToPointer("chatroom Custom"),
 	})
 
 	fmt.Printf("%+v\n", data)

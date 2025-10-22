@@ -3,6 +3,7 @@ package message
 import (
 	"context"
 	"github.com/opdss/go-easemob-im-server-sdk/request"
+	"github.com/opdss/go-easemob-im-server-sdk/utils"
 )
 
 type BroadcastMsgBody interface {
@@ -58,11 +59,12 @@ type BroadcastCustomMsg struct {
 }
 
 type BroadcastMsgReq[T BroadcastMsgBody] struct {
-	TargetType string            `json:"target_type"`    //广播消息接收方。固定值为 users，表示 app 下的所有用户。
-	From       *string           `json:"from,omitempty"` //消息发送方的用户 ID。若不传入该字段，服务器默认设置为 admin。
-	Appkey     string            `json:"appkey"`
-	Msg        T                 `json:"msg"`
-	Ext        map[string]string `json:"ext,omitempty"` //消息支持扩展字段，可添加自定义信息。不能对该参数传入 null。同时，推送通知也支持自定义扩展字段，详见 APNs 自定义显示 和 Android 推送字段说明。
+	TargetType       *string           `json:"target_type"`                  //广播消息接收方。固定值为 users，表示 app 下的所有用户。 只有广播全部用户消息时，target_type 才有用，且必为users。
+	ChatroomMsgLevel *MsgLevel         `json:"chatroom_msg_level,omitempty"` // 广播消息在聊天室中的发送级别。若不传入该字段，服务器默认设置为 normal。只有广播到聊天室消息时，chatroom_msg_level 才有用。
+	From             *string           `json:"from,omitempty"`               //消息发送方的用户 ID。若不传入该字段，服务器默认设置为 admin。
+	Appkey           string            `json:"appkey"`
+	Msg              T                 `json:"msg"`
+	Ext              map[string]string `json:"ext,omitempty"` //消息支持扩展字段，可添加自定义信息。不能对该参数传入 null。同时，推送通知也支持自定义扩展字段，详见 APNs 自定义显示 和 Android 推送字段说明。
 }
 
 type BroadcastMsgResp[T MsgBody] struct {
@@ -72,35 +74,85 @@ type BroadcastMsgResp[T MsgBody] struct {
 	} `json:"body"`
 }
 
+var _targetType = utils.ToPointer("users")
+
 func (m *message) BroadcastTxt(ctx context.Context, req *BroadcastMsgReq[BroadcastTxtMsg]) (*SendMsgResp, error) {
+	if req.TargetType == nil {
+		req.TargetType = _targetType
+	}
+	if req.ChatroomMsgLevel != nil {
+		req.ChatroomMsgLevel = nil
+	}
 	return m.Broadcast(ctx, req)
 }
 
 func (m *message) BroadcastImg(ctx context.Context, req *BroadcastMsgReq[BroadcastImgMsg]) (*SendMsgResp, error) {
+	if req.TargetType == nil {
+		req.TargetType = _targetType
+	}
+	if req.ChatroomMsgLevel != nil {
+		req.ChatroomMsgLevel = nil
+	}
 	return m.Broadcast(ctx, req)
 }
 
 func (m *message) BroadcastAudio(ctx context.Context, req *BroadcastMsgReq[BroadcastAudioMsg]) (*SendMsgResp, error) {
+	if req.TargetType == nil {
+		req.TargetType = _targetType
+	}
+	if req.ChatroomMsgLevel != nil {
+		req.ChatroomMsgLevel = nil
+	}
 	return m.Broadcast(ctx, req)
 }
 
 func (m *message) BroadcastVideo(ctx context.Context, req *BroadcastMsgReq[BroadcastVideoMsg]) (*SendMsgResp, error) {
+	if req.TargetType == nil {
+		req.TargetType = _targetType
+	}
+	if req.ChatroomMsgLevel != nil {
+		req.ChatroomMsgLevel = nil
+	}
 	return m.Broadcast(ctx, req)
 }
 
 func (m *message) BroadcastFile(ctx context.Context, req *BroadcastMsgReq[BroadcastFileMsg]) (*SendMsgResp, error) {
+	if req.TargetType == nil {
+		req.TargetType = _targetType
+	}
+	if req.ChatroomMsgLevel != nil {
+		req.ChatroomMsgLevel = nil
+	}
 	return m.Broadcast(ctx, req)
 }
 
 func (m *message) BroadcastLoc(ctx context.Context, req *BroadcastMsgReq[BroadcastLocMsg]) (*SendMsgResp, error) {
+	if req.TargetType == nil {
+		req.TargetType = _targetType
+	}
+	if req.ChatroomMsgLevel != nil {
+		req.ChatroomMsgLevel = nil
+	}
 	return m.Broadcast(ctx, req)
 }
 
 func (m *message) BroadcastCmd(ctx context.Context, req *BroadcastMsgReq[BroadcastCmdMsg]) (*SendMsgResp, error) {
+	if req.TargetType == nil {
+		req.TargetType = _targetType
+	}
+	if req.ChatroomMsgLevel != nil {
+		req.ChatroomMsgLevel = nil
+	}
 	return m.Broadcast(ctx, req)
 }
 
 func (m *message) BroadcastCustom(ctx context.Context, req *BroadcastMsgReq[BroadcastCustomMsg]) (*SendMsgResp, error) {
+	if req.TargetType == nil {
+		req.TargetType = _targetType
+	}
+	if req.ChatroomMsgLevel != nil {
+		req.ChatroomMsgLevel = nil
+	}
 	return m.Broadcast(ctx, req)
 }
 

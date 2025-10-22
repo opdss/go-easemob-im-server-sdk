@@ -7,12 +7,12 @@ import (
 	"testing"
 )
 
-func TestMessage_Broadcast(t *testing.T) {
+func TestMessage_Boradcast(t *testing.T) {
 
 	data, err := newEasemob().Message().BroadcastTxt(context.Background(), &message.BroadcastMsgReq[message.BroadcastTxtMsg]{
 		TargetType: "users",
 		//Appkey:     newEasemob().Client.Config().AppKey,
-		//From: utils.PointerAny("888888"),
+		//From: utils.ToPointer("888888"),
 		Msg: message.BroadcastTxtMsg{
 			Type: message.Txt,
 			TxtMsg: message.TxtMsg{
