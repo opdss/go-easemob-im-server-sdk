@@ -44,7 +44,8 @@ type CreateReq struct {
 type CreateResp struct {
 	request.CommonResp
 	Data struct {
-		ID string `json:"id"`
+		Success bool   `json:"success"`
+		ID      string `json:"id"`
 	} `json:"data"`
 }
 
@@ -74,5 +75,18 @@ type UpdateResp struct {
 func (c *chatroom) Update(ctx context.Context, chatroomId string, req *UpdateReq) (*UpdateResp, error) {
 	resp := UpdateResp{}
 	err := c.client.Put(ctx, "/chatrooms/"+chatroomId, req, &resp)
+	return &resp, err
+}
+
+type DeleteResp struct {
+	request.CommonResp
+	Data struct {
+		ID string `json:"id"`
+	} `json:"data"`
+}
+
+func (c *chatroom) Delete(ctx context.Context, chatroomId string) (*DeleteResp, error) {
+	resp := DeleteResp{}
+	err := c.client.Delete(ctx, "/chatrooms/"+chatroomId, nil, &resp)
 	return &resp, err
 }

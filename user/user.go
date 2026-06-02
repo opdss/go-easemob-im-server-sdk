@@ -13,6 +13,8 @@ type User interface {
 	BatchRegistry(ctx context.Context, req []*RegisterReq) (*RegistryResp, error) // 批量注册用户，单次请求最多可注册 60 个用户 ID。
 	// GetToken 获取用户token https://doc.easemob.com/document/server-side/easemob_user_token.html#%E9%80%9A%E8%BF%87%E7%94%A8%E6%88%B7-id-%E8%8E%B7%E5%8F%96%E7%94%A8%E6%88%B7-token
 	GetToken(ctx context.Context, req *TokenReq) (*TokenResp, error)
+	// Delete 删除单个用户 https://doc.easemob.com/document/server-side/account_delete_single.html
+	Delete(ctx context.Context, username string) (*DeleteResp, error)
 }
 
 type user struct {

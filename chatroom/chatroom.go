@@ -15,6 +15,9 @@ type Chatroom interface {
 	// Update 修改聊天室信息
 	// https://doc.easemob.com/document/server-side/chatroom_manage.html#%E4%BF%AE%E6%94%B9%E8%81%8A%E5%A4%A9%E5%AE%A4%E4%BF%A1%E6%81%AF
 	Update(ctx context.Context, chatroomId string, req *UpdateReq) (*UpdateResp, error)
+	// Delete 删除聊天室
+	// https://doc.easemob.com/document/server-side/chatroom_delete.html
+	Delete(ctx context.Context, chatroomId string) (*DeleteResp, error)
 	// SetAnnouncement 设置聊天室公告
 	// https://doc.easemob.com/document/server-side/chatroom_attribute.html#%E4%BF%AE%E6%94%B9%E8%81%8A%E5%A4%A9%E5%AE%A4%E5%85%AC%E5%91%8A
 	SetAnnouncement(ctx context.Context, chatRoomId string, announcement string) (*SetAnnouncementResp, error)
