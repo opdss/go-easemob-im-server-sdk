@@ -81,7 +81,8 @@ func (c *chatroom) Update(ctx context.Context, chatroomId string, req *UpdateReq
 type DeleteResp struct {
 	request.CommonResp
 	Data struct {
-		ID string `json:"id"`
+		Success bool   `json:"success"` //是否解散成功
+		ID      string `json:"id"`
 	} `json:"data"`
 }
 
