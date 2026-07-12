@@ -8,7 +8,7 @@ import (
 )
 
 type Easemob struct {
-	*request.Client
+	request.Client
 	chatroom chatroom.Chatroom
 	user     user.User
 	message  message.Message

@@ -18,10 +18,10 @@ type User interface {
 }
 
 type user struct {
-	client *request.Client
+	client request.Client
 }
 
-func NewUser(c *request.Client) User {
+func NewUser(c request.Client) User {
 	return &user{
 		client: c,
 	}

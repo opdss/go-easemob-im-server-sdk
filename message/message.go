@@ -144,10 +144,10 @@ type Message interface {
 }
 
 type message struct {
-	client *request.Client
+	client request.Client
 }
 
-func NewMessage(client *request.Client) Message {
+func NewMessage(client request.Client) Message {
 	return &message{
 		client: client,
 	}

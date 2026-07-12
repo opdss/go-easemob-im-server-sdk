@@ -49,10 +49,10 @@ type Chatroom interface {
 }
 
 type chatroom struct {
-	client *request.Client
+	client request.Client
 }
 
-func NewChatroom(client *request.Client) Chatroom {
+func NewChatroom(client request.Client) Chatroom {
 	return &chatroom{
 		client: client,
 	}
