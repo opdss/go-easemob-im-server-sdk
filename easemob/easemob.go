@@ -1,6 +1,7 @@
 package easemob
 
 import (
+	"github.com/opdss/go-easemob-im-server-sdk/chatgroup"
 	"github.com/opdss/go-easemob-im-server-sdk/chatroom"
 	"github.com/opdss/go-easemob-im-server-sdk/message"
 	"github.com/opdss/go-easemob-im-server-sdk/request"
@@ -9,9 +10,10 @@ import (
 
 type Easemob struct {
 	request.Client
-	chatroom chatroom.Chatroom
-	user     user.User
-	message  message.Message
+	chatroom  chatroom.Chatroom
+	user      user.User
+	message   message.Message
+	chatgroup chatgroup.Chatgroup
 }
 
 func NewEasemob(conf request.Config) (*Easemob, error) {
@@ -20,10 +22,11 @@ func NewEasemob(conf request.Config) (*Easemob, error) {
 		return nil, err
 	}
 	em := &Easemob{
-		Client:   c,
-		chatroom: chatroom.NewChatroom(c),
-		user:     user.NewUser(c),
-		message:  message.NewMessage(c),
+		Client:    c,
+		chatroom:  chatroom.NewChatroom(c),
+		user:      user.NewUser(c),
+		message:   message.NewMessage(c),
+		chatgroup: chatgroup.NewChatgroup(c),
 	}
 	return em, nil
 }
@@ -38,4 +41,8 @@ func (em *Easemob) Chatroom() chatroom.Chatroom {
 
 func (em *Easemob) Message() message.Message {
 	return em.message
+}
+
+func (em *Easemob) Chatgroup() chatgroup.Chatgroup {
+	return em.chatgroup
 }
