@@ -5,6 +5,8 @@ import (
 	"github.com/opdss/go-easemob-im-server-sdk/request"
 )
 
+const MessagesRouteTypeOnline = "ROUTE_ONLINE" //仅发送给在线用户，即 routetype 设置为 ROUTE_ONLINE
+
 type Message interface {
 	// SendTxtToUser 发送文本消息到用户
 	// https://doc.easemob.com/document/server-side/message_single.html#%E5%8F%91%E9%80%81%E6%96%87%E6%9C%AC%E6%B6%88%E6%81%AF
@@ -59,6 +61,33 @@ type Message interface {
 	SendCustomToChatroom(ctx context.Context, req *SendToChatroomMsgReq[CustomMsg]) (*SendMsgResp, error)
 	// SendToChatroom 发送消息到聊天室
 	SendToChatroom(ctx context.Context, req any) (*SendMsgResp, error)
+
+	// SendTxtToChatgroup 发送文本消息到聊天室
+	// https://doc.easemob.com/document/server-side/message_chatgroup.html#%E5%8F%91%E9%80%81%E6%96%87%E6%9C%AC%E6%B6%88%E6%81%AF
+	SendTxtToChatgroup(ctx context.Context, req *SendToChatgroupMsgReq[TxtMsg]) (*SendMsgResp, error)
+	// SendImgToChatgroup 发送图片消息到聊天室
+	// https://doc.easemob.com/document/server-side/message_chatgroup.html#%E5%8F%91%E9%80%81%E5%9B%BE%E7%89%87%E6%B6%88%E6%81%AF
+	SendImgToChatgroup(ctx context.Context, req *SendToChatgroupMsgReq[ImgMsg]) (*SendMsgResp, error)
+	// SendAudioToChatgroup 发送音频消息到聊天室
+	// https://doc.easemob.com/document/server-side/message_chatgroup.html#%E5%8F%91%E9%80%81%E8%AF%AD%E9%9F%B3%E6%B6%88%E6%81%AF
+	SendAudioToChatgroup(ctx context.Context, req *SendToChatgroupMsgReq[AudioMsg]) (*SendMsgResp, error)
+	// SendVideoToChatgroup 发送视频消息到聊天室
+	// https://doc.easemob.com/document/server-side/message_chatgroup.html#%E5%8F%91%E9%80%81%E8%A7%86%E9%A2%91%E6%B6%88%E6%81%AF
+	SendVideoToChatgroup(ctx context.Context, req *SendToChatgroupMsgReq[VideoMsg]) (*SendMsgResp, error)
+	// SendFileToChatgroup 发送文件消息到聊天室
+	// https://doc.easemob.com/document/server-side/message_chatgroup.html#%E5%8F%91%E9%80%81%E6%96%87%E4%BB%B6%E6%B6%88%E6%81%AF
+	SendFileToChatgroup(ctx context.Context, req *SendToChatgroupMsgReq[FileMsg]) (*SendMsgResp, error)
+	// SendLocToChatgroup 发送位置消息到聊天室
+	// https://doc.easemob.com/document/server-side/message_chatgroup.html#%E5%8F%91%E9%80%81%E4%BD%8D%E7%BD%AE%E6%B6%88%E6%81%AF
+	SendLocToChatgroup(ctx context.Context, req *SendToChatgroupMsgReq[LocMsg]) (*SendMsgResp, error)
+	// SendCmdToChatgroup 发送透传消息到聊天室
+	// https://doc.easemob.com/document/server-side/message_chatgroup.html#%E5%8F%91%E9%80%81%E9%80%8F%E4%BC%A0%E6%B6%88%E6%81%AF
+	SendCmdToChatgroup(ctx context.Context, req *SendToChatgroupMsgReq[CmdMsg]) (*SendMsgResp, error)
+	// SendCustomToChatgroup 发送自定义消息到聊天室
+	// https://doc.easemob.com/document/server-side/message_chatgroup.html#%E5%8F%91%E9%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF
+	SendCustomToChatgroup(ctx context.Context, req *SendToChatgroupMsgReq[CustomMsg]) (*SendMsgResp, error)
+	// SendToChatgroup 发送消息到聊天室
+	SendToChatgroup(ctx context.Context, req any) (*SendMsgResp, error)
 
 	// BroadcastTxt 广播消息发送所有用户，慎用
 	// https://doc.easemob.com/document/server-side/message_broadcast.html#%E5%90%91-app-%E6%89%80%E6%9C%89%E7%94%A8%E6%88%B7%E5%8F%91%E9%80%81%E5%B9%BF%E6%92%AD%E6%B6%88%E6%81%AF

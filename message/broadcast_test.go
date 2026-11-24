@@ -4,13 +4,14 @@ import (
 	"context"
 	"fmt"
 	"github.com/opdss/go-easemob-im-server-sdk/message"
+	"github.com/opdss/go-easemob-im-server-sdk/utils"
 	"testing"
 )
 
 func TestMessage_Boradcast(t *testing.T) {
 
 	data, err := newEasemob().Message().BroadcastTxt(context.Background(), &message.BroadcastMsgReq[message.BroadcastTxtMsg]{
-		TargetType: "users",
+		TargetType: utils.ToPointer("users"),
 		//Appkey:     newEasemob().Client.Config().AppKey,
 		//From: utils.ToPointer("888888"),
 		Msg: message.BroadcastTxtMsg{
